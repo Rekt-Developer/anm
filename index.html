@@ -4,16 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Rekt-Developer">
-    <meta name="description" content="Explore files and folders dynamically with video player support, built for developers.">
-    <meta property="og:title" content="Dynamic File Explorer - Video Player Included">
-    <meta property="og:description" content="A developer-friendly, auto-generated file explorer with advanced video playback options.">
-    <meta property="og:image" content="https://example.com/logo.png">
+    <meta name="description" content="Advanced video player testing platform with file manager and dynamic input for developers.">
+    <meta property="og:title" content="Advanced Video Players & File Manager">
+    <meta property="og:description" content="Test video playback with multiple players and explore files dynamically.">
     <meta property="og:url" content="https://rekt-developer.github.io/Rekt-Rekt-Developer">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="theme-color" content="#333">
-    <title>Dynamic File Explorer</title>
-    <link rel="stylesheet" href="styles.css">
-    <script defer src="scripts.js"></script>
+    <meta name="theme-color" content="#24292f">
+    <title>Advanced Video Players</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/video.js/dist/video-js.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/video.js/dist/video.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,7 +33,7 @@
         main {
             padding: 20px;
         }
-        .file-list {
+        .file-manager {
             margin: 20px auto;
             padding: 10px;
             max-width: 900px;
@@ -42,15 +41,18 @@
             border-radius: 5px;
             overflow-x: auto;
         }
-        .file-list a {
+        .file-manager a {
             color: #1e90ff;
             text-decoration: none;
             margin-right: 10px;
         }
-        .file-list a:hover {
+        .file-manager a:hover {
             text-decoration: underline;
         }
-        video {
+        .video-section {
+            margin-top: 20px;
+        }
+        video, .video-js {
             display: block;
             margin: 20px auto;
             width: 80%;
@@ -58,29 +60,75 @@
             border: 2px solid #333;
             border-radius: 5px;
         }
+        h2 {
+            color: #ffa500;
+        }
+        .url-form {
+            text-align: center;
+            margin: 20px;
+        }
+        .url-form input {
+            padding: 10px;
+            width: 70%;
+            margin-right: 10px;
+        }
+        .url-form button {
+            padding: 10px 20px;
+            background: #1e90ff;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+        }
+        .url-form button:hover {
+            background: #0077cc;
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>Dynamic File Explorer</h1>
-        <p>Explore all files and folders in this repository.</p>
+        <h1>Advanced Video Players & File Manager</h1>
+        <p>Explore files and test video playback with multiple players.</p>
     </header>
     <main>
-        <section class="file-list" id="file-list">
+        <section class="file-manager" id="file-list">
+            <h2>File Manager</h2>
             <p>Loading files...</p>
         </section>
-        <section class="video-player">
-            <h2>Video Player</h2>
-            <video id="video-player" controls>
-                <source src="sample.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+
+        <section class="video-section">
+            <h2>Video Players</h2>
+            <div>
+                <h3>HTML5 Video Player</h3>
+                <video id="html5-player" controls>
+                    <source src="https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div>
+                <h3>HLS.js Video Player</h3>
+                <video id="hls-player" controls></video>
+            </div>
+            <div>
+                <h3>Video.js Player</h3>
+                <video id="videojs-player" class="video-js vjs-default-skin" controls>
+                    <source src="https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" type="video/mp4">
+                </video>
+            </div>
+        </section>
+
+        <section class="url-form">
+            <h2>Test a Custom Video</h2>
+            <form id="url-form">
+                <input type="url" id="video-url" placeholder="Enter direct video URL (e.g., .mp4, .m3u8)" required>
+                <button type="submit">Play Video</button>
+            </form>
         </section>
     </main>
     <footer>
         <p>© 2024 Rekt-Developer | <a href="https://rekt-developer.github.io/Rekt-Rekt-Developer" target="_blank">GitHub Pages</a></p>
     </footer>
     <script>
+        // Dynamically load files from the root
         async function fetchFiles() {
             try {
                 const response = await fetch('./'); // Fetch the root directory
@@ -98,6 +146,34 @@
             }
         }
         fetchFiles();
+
+        // HLS.js integration
+        const hls = new Hls();
+        const hlsVideo = document.getElementById('hls-player');
+        hls.loadSource('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'); // Replace with HLS playlist
+        hls.attachMedia(hlsVideo);
+
+        // Initialize Video.js player
+        videojs('videojs-player');
+
+        // Custom URL form handler
+        document.getElementById('url-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const url = document.getElementById('video-url').value;
+            const html5Player = document.getElementById('html5-player');
+            const hlsPlayer = document.getElementById('hls-player');
+            const videojsPlayer = videojs('videojs-player');
+
+            // Update all players with the new URL
+            html5Player.src = url;
+            if (Hls.isSupported() && url.endsWith('.m3u8')) {
+                hls.loadSource(url);
+                hls.attachMedia(hlsPlayer);
+            } else {
+                hlsPlayer.src = url; // Direct MP4/WebM playback
+            }
+            videojsPlayer.src({ src: url });
+        });
     </script>
 </body>
 </html>
