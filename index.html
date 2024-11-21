@@ -1,30 +1,103 @@
-
-<meta property="og:title"content=" 😱 سكس 🐶 حيوانات 🐎 ">
-<meta property="og:description"content="
-                                        
-                                        
-                                        
-                                        
-                                        ">
-<meta name="twitter:card"content="summary_large_image">
-<meta name="twitter:image"content="
-                                   
-                                   
-                                   
-                                   
-                                   
-                                   
-                                   ">
-
-
-<script type = "text/javascript">
-function reDirect() {
-a = location.href = "bit.ly/";
-b = location.href = "caa";
-c = location.href = "art";
-d = Math.ceil(Math.random() * 2);
-a = "http://" + a + b + c + d ;
-window.location = a
-}
-reDirect();
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Rekt-Developer">
+    <meta name="description" content="Explore files and folders dynamically with video player support, built for developers.">
+    <meta property="og:title" content="Dynamic File Explorer - Video Player Included">
+    <meta property="og:description" content="A developer-friendly, auto-generated file explorer with advanced video playback options.">
+    <meta property="og:image" content="https://example.com/logo.png">
+    <meta property="og:url" content="https://rekt-developer.github.io/Rekt-Rekt-Developer">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#333">
+    <title>Dynamic File Explorer</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="scripts.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background: #333;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        main {
+            padding: 20px;
+        }
+        .file-list {
+            margin: 20px auto;
+            padding: 10px;
+            max-width: 900px;
+            background: #444;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .file-list a {
+            color: #1e90ff;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        .file-list a:hover {
+            text-decoration: underline;
+        }
+        video {
+            display: block;
+            margin: 20px auto;
+            width: 80%;
+            max-width: 720px;
+            border: 2px solid #333;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Dynamic File Explorer</h1>
+        <p>Explore all files and folders in this repository.</p>
+    </header>
+    <main>
+        <section class="file-list" id="file-list">
+            <p>Loading files...</p>
+        </section>
+        <section class="video-player">
+            <h2>Video Player</h2>
+            <video id="video-player" controls>
+                <source src="sample.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </section>
+    </main>
+    <footer>
+        <p>© 2024 Rekt-Developer | <a href="https://rekt-developer.github.io/Rekt-Rekt-Developer" target="_blank">GitHub Pages</a></p>
+    </footer>
+    <script>
+        async function fetchFiles() {
+            try {
+                const response = await fetch('./'); // Fetch the root directory
+                const parser = new DOMParser();
+                const html = await response.text();
+                const doc = parser.parseFromString(html, 'text/html');
+                const links = Array.from(doc.querySelectorAll('a')).filter(a => !a.href.includes('/..'));
+                const fileList = document.getElementById('file-list');
+                fileList.innerHTML = links
+                    .map(link => `<a href="${link.href}" target="_blank">${link.textContent}</a>`)
+                    .join('<br>');
+            } catch (err) {
+                console.error('Error fetching files:', err);
+                document.getElementById('file-list').innerHTML = 'Error loading files.';
+            }
+        }
+        fetchFiles();
+    </script>
+</body>
+</html>
